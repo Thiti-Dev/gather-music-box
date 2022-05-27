@@ -27,6 +27,12 @@ declare class ymp3d {
 
   static on(emitter: any, event: any, options: any): any;
 
+  on<T = string>(
+    emitter: any,
+    event: (fileName: T) => any,
+    options?: any
+  ): void;
+
   static once(emitter: any, name: any, options: any): any;
 
   static setMaxListeners(n: any, eventTargets: any): void;
