@@ -59,6 +59,15 @@ export const requestMusicHandler = async (
       ]);
       console.log("setting ready = true");
       SocketInstance.getInstance().emit("download-progress", 100);
+
+      SocketInstance.getInstance().emit(
+        "video-updated",
+        snakecaseKeys(
+          JSON.parse(
+            await RedisInstance.getInstance().call("JSON.GET", "music-box-json")
+          )
+        )
+      );
     },
     (progress) => {
       SocketInstance.getInstance().emit(
@@ -71,19 +80,28 @@ export const requestMusicHandler = async (
     return;
   });
 
+  const reqStamptation: number = new Date().getTime();
+
+  const redisEntity = {
+    name: musicDetail.name,
+    thumbnail: musicDetail.thumbnail,
+    musicLengthInSecond: parseInt(musicDetail.seconds),
+    ready: false,
+    requestedAt: reqStamptation,
+    readyAt: null,
+    shouldBeEndAt: null,
+  };
+
   redisInstance.call(
     "JSON.SET",
     "music-box-json",
     ".",
-    JSON.stringify({
-      name: musicDetail.name,
-      thumbnail: musicDetail.thumbnail,
-      musicLengthInSecond: parseInt(musicDetail.seconds),
-      ready: false,
-      requestedAt: new Date().getTime(),
-      readyAt: null,
-      shouldBeEndAt: null,
-    })
+    JSON.stringify(redisEntity)
+  );
+
+  SocketInstance.getInstance().emit(
+    "video-updated",
+    snakecaseKeys(redisEntity)
   );
   reply.send(snakecaseKeys({ data: musicDetail }));
 };
