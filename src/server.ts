@@ -32,6 +32,6 @@ fastify.get("/", (request, reply) => {
   reply.send({ success: true });
 });
 
-fastify.listen(process.env.PORT ?? 3000, (err, address) => {
+fastify.listen(process.env.PORT || 3000, (err, address) => {
   if (err) throw err;
 });

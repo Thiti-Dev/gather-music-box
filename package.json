@@ -26,5 +26,8 @@
     "public-ip": "^4",
     "snakecase-keys": "^5.4.2",
     "ymp3d": "^1.0.2"
+  },
+  "engines": {
+    "node": "17.6.0"
   }
 }
