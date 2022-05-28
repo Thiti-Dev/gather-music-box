@@ -22,7 +22,7 @@ export async function getMapContent(
 export async function setMapContent(
   gatherConf: IConfig["gatherCredential"],
   mapContent: any
-): Promise<any> {
+): Promise<void> {
   const response: Response = await fetch(GATHER_SET_MAP_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -32,5 +32,19 @@ export async function setMapContent(
     headers: { "Content-Type": "application/json" },
   });
   const jsonResponse: string = await response.text();
-  return;
+  console.log("[setMapContent]: " + jsonResponse);
+}
+
+export async function changeMusic(
+  gatherConf: IConfig["gatherCredential"],
+  musicURL: string,
+  which: (target: any) => boolean
+): Promise<any> {
+  const mapContent = await getMapContent(gatherConf);
+  const targetObj = mapContent.objects.find(which);
+  if (targetObj) {
+    targetObj.sound.src = musicURL + "?" + new Date().getTime();
+    setMapContent(gatherConf, mapContent);
+    console.log("[changeMusic]: found targetObj updating instance");
+  }
 }
