@@ -3,6 +3,7 @@ import path from "path";
 import "./core/process/handle-rejection";
 import { setUpRedisDatabase } from "./redis/init";
 import { initializeSocketIO } from "./socket/init";
+import { SocketInstance } from "./socket/instance";
 
 require("dotenv").config();
 

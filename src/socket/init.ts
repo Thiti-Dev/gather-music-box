@@ -1,5 +1,6 @@
 import { RawServerDefault } from "fastify";
 import { Server } from "socket.io";
+import { SocketInstance } from "./instance";
 
 export function initializeSocketIO(server: RawServerDefault) {
   const io = new Server(server, {
@@ -17,5 +18,5 @@ export function initializeSocketIO(server: RawServerDefault) {
     });
   });
 
-  console.log("[SOCKET-IO]: has been initialized");
+  SocketInstance.setInstance(io);
 }
