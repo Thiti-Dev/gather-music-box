@@ -1,7 +1,5 @@
 import Fastify from "fastify";
 import path from "path";
-import { CONFIGS } from "./configs/config";
-import { getMapContent } from "./core/gather";
 import "./core/process/handle-rejection";
 import { setUpRedisDatabase } from "./redis/init";
 
@@ -9,6 +7,33 @@ require("dotenv").config();
 
 const fastify: ReturnType<typeof Fastify> = Fastify({
   logger: true,
+});
+
+fastify.register(require("@fastify/cors"), function (instance) {
+  return (req: any, callback: any) => {
+    let corsOptions;
+    const origin = req.headers.origin;
+    const hostname = origin ? new URL(origin).hostname : "fetcher";
+    //
+    // ─── WHITELIST ORIGIN ────────────────────────────────────────────
+    //
+    const WHITELIST_ORIGINS: string[] = ["127.0.0.1", "localhost"];
+    // ─────────────────────────────────────────────────────────────────
+
+    if (process.env.ALLOW_ALL_ORIGIN === "true") {
+      corsOptions = { origin: true };
+    } else {
+      if (WHITELIST_ORIGINS.includes(hostname)) {
+        corsOptions = {
+          origin: true,
+        };
+      } else {
+        corsOptions = { origin: false };
+      }
+    }
+
+    callback(null, corsOptions); // callback expects two parameters: error and options
+  };
 });
 
 setUpRedisDatabase(fastify);
