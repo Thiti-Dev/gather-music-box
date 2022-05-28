@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import path from "path";
 import "./core/process/handle-rejection";
 import { setUpRedisDatabase } from "./redis/init";
+import { initializeSocketIO } from "./socket/init";
 
 require("dotenv").config();
 
@@ -35,6 +36,8 @@ fastify.register(require("@fastify/cors"), function (instance) {
     callback(null, corsOptions); // callback expects two parameters: error and options
   };
 });
+
+initializeSocketIO(fastify.server);
 
 setUpRedisDatabase(fastify);
 
