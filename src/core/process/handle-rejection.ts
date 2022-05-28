@@ -1,3 +1,6 @@
+import { FastifyRedis } from "@fastify/redis";
+import { RedisInstance } from "../../redis/instance";
+
 const WHITELIST_ERRORS: string[] = ["Input stream error", "No video id found"];
 
 const WHITELIST_EXCEPTIONS: string[] = ["Input stream error"];
@@ -18,4 +21,10 @@ process.on("uncaughtException", function (err) {
     )
   )
     process.exit(1);
+  else {
+    if (err.message.includes("Input stream error")) {
+      const redisInstance: FastifyRedis = RedisInstance.getInstance();
+      redisInstance.call("JSON.DEL", "music-box-json");
+    }
+  }
 });
