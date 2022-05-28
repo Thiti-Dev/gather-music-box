@@ -25,9 +25,8 @@ export const requestMusicHandler = async (
     "public/temp/current.mp3",
     async (fileName: string) => {
       const ipv4: string = await publicIp.v4();
-      const publicMusicURL: string = `${ipv4}:${process.env.PORT}/public/temp/current.mp3`;
+      const publicMusicURL: string = `${process.env.DEPLOYMENT_URL}/public/temp/current.mp3`;
       console.log(publicMusicURL);
-      console.log(CONFIGS.gatherCredential);
       await changeMusic(
         CONFIGS.gatherCredential,
         publicMusicURL,
