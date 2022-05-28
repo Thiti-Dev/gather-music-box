@@ -4,7 +4,10 @@ import Fastify, {
   FastifyReply,
   FastifyRequest,
 } from "fastify";
-import { requestMusicHandler } from "../handlers/music";
+import {
+  getCurrentMusicDetailHandler,
+  requestMusicHandler,
+} from "../handlers/music";
 
 export default function (
   fastify: ReturnType<typeof Fastify>,
@@ -15,5 +18,6 @@ export default function (
     reply.send({ success: true });
   });
   fastify.post("/request-music", requestMusicHandler);
+  fastify.get("/current-music-detail", getCurrentMusicDetailHandler);
   done();
 }
