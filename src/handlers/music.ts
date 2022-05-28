@@ -69,6 +69,7 @@ export const requestMusicHandler = async (
     ".",
     JSON.stringify({
       name: musicDetail.name,
+      thumbnail: musicDetail.thumbnail,
       musicLengthInSecond: parseInt(musicDetail.seconds),
       ready: false,
       requestedAt: new Date().getTime(),
