@@ -44,7 +44,7 @@ export async function changeMusic(
   const targetObj = mapContent.objects.find(which);
   if (targetObj) {
     targetObj.sound.src = musicURL + "?" + new Date().getTime();
-    setMapContent(gatherConf, mapContent);
     console.log("[changeMusic]: found targetObj updating instance");
+    await setMapContent(gatherConf, mapContent);
   }
 }

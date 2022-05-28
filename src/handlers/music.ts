@@ -5,6 +5,9 @@ import { downloadMP3FromYoutubeURL } from "../core/modules-facilitate/ymp3d";
 import { RedisInstance } from "../redis/instance";
 
 import snakecaseKeys from "snakecase-keys";
+import { FastifyRedis } from "@fastify/redis";
+
+import publicIp from "public-ip";
 
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
@@ -15,34 +18,65 @@ export const requestMusicHandler = async (
     return;
   }
 
+  const redisInstance: FastifyRedis = RedisInstance.getInstance();
+
   const musicDetail = await downloadMP3FromYoutubeURL(
     request.body.yt_url,
-    "public/temp/current.mp3"
+    "public/temp/current.mp3",
+    async (fileName: string) => {
+      const ipv4: string = await publicIp.v4();
+      const publicMusicURL: string = `${ipv4}:${process.env.PORT}/public/temp/current.mp3`;
+      console.log(publicMusicURL);
+      console.log(CONFIGS.gatherCredential);
+      await changeMusic(
+        CONFIGS.gatherCredential,
+        publicMusicURL,
+        (target: any) =>
+          target.id === "SPJxItemShop-Sound-001" &&
+          target.x === 57 &&
+          target.y === 32
+      );
+
+      const now = new Date(),
+        end = new Date();
+
+      end.setSeconds(end.getSeconds() + parseInt(musicDetail.seconds));
+
+      await Promise.all([
+        redisInstance.call("JSON.SET", "music-box-json", ".ready", true),
+        redisInstance.call(
+          "JSON.SET",
+          "music-box-json",
+          ".readyAt",
+          now.getTime()
+        ),
+        redisInstance.call(
+          "JSON.SET",
+          "music-box-json",
+          ".shouldBeEndAt",
+          end.getTime()
+        ),
+      ]);
+      console.log("setting ready = true");
+    }
   ).catch(() => {
     reply.status(400).send({ message: "invalid given url" });
     return;
   });
 
-  RedisInstance.getInstance().call(
+  redisInstance.call(
     "JSON.SET",
     "music-box-json",
     ".",
     JSON.stringify({
       name: musicDetail.name,
-      musicLengthInSecond: musicDetail.seconds,
+      musicLengthInSecond: parseInt(musicDetail.seconds),
       ready: false,
+      requestedAt: new Date().getTime(),
       readyAt: null,
+      shouldBeEndAt: null,
     })
   );
-
-  /*changeMusic(
-    CONFIGS.gatherCredential,
-    "https://dl2.soundcloudmp3.org/api/download/eyJpdiI6Iis3dWxRSGN2K3JjZzJMZVNFVlZpaVE9PSIsInZhbHVlIjoidVdzNnJKZXRTaFZob0QwVjdNVGd2MmhyOVhEeEF0eXZjU1lkcGVlRkw4NG84ODF6cVBuTWJWTVNudXVJbzJhT2xnODhIOTFoZEc3YTdmakRwRGFzSWdcL3hUTzRLMnIxWFFTSkFDUDA5V3VnK2lQM3JhT0QzanYwYmpVSFwvT1hQUGVrbGtQSmk2dFpJaEcyKzk2aUdYNGc0K1pzXC9GXC95SmQ4Qjg2a3RBbVg5RT0iLCJtYWMiOiJjZjE0MDIwNTFjZWI1YTY0NjYxN2VjYjE4YTU2N2ZhMTM4YzhlYjA1NzdhMjRjMTg0NDVmMjY1N2Y3M2M1MTg4In0=",
-    (target: any) =>
-      target.id === "SPJxItemShop-Sound-001" &&
-      target.x === 57 &&
-      target.y === 32
-  );*/
   reply.send(snakecaseKeys({ data: musicDetail }));
 };
 
