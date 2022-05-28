@@ -8,6 +8,7 @@ import snakecaseKeys from "snakecase-keys";
 import { FastifyRedis } from "@fastify/redis";
 
 import publicIp from "public-ip";
+import { SocketInstance } from "../socket/instance";
 
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
@@ -57,6 +58,13 @@ export const requestMusicHandler = async (
         ),
       ]);
       console.log("setting ready = true");
+      SocketInstance.getInstance().emit("download-progress", 100);
+    },
+    (progress) => {
+      SocketInstance.getInstance().emit(
+        "download-progress",
+        parseInt(progress.percent)
+      );
     }
   ).catch(() => {
     reply.status(400).send({ message: "invalid given url" });
