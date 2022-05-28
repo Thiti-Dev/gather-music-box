@@ -4,6 +4,8 @@ import { changeMusic } from "../core/gather";
 import { downloadMP3FromYoutubeURL } from "../core/modules-facilitate/ymp3d";
 import { RedisInstance } from "../redis/instance";
 
+import snakecaseKeys from "snakecase-keys";
+
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
@@ -21,12 +23,17 @@ export const requestMusicHandler = async (
     return;
   });
 
-  RedisInstance.getInstance().hset("music-box", {
-    name: musicDetail.name,
-    musicLengthInSecond: musicDetail.seconds,
-    ready: false,
-    readyAt: null,
-  });
+  RedisInstance.getInstance().call(
+    "JSON.SET",
+    "music-box-json",
+    ".",
+    JSON.stringify({
+      name: musicDetail.name,
+      musicLengthInSecond: musicDetail.seconds,
+      ready: false,
+      readyAt: null,
+    })
+  );
 
   /*changeMusic(
     CONFIGS.gatherCredential,
@@ -36,20 +43,20 @@ export const requestMusicHandler = async (
       target.x === 57 &&
       target.y === 32
   );*/
-  reply.send({ data: musicDetail });
+  reply.send(snakecaseKeys({ data: musicDetail }));
 };
 
 export const getCurrentMusicDetailHandler = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
 ) => {
-  const detail: any = await RedisInstance.getInstance().hgetall("music-box");
-  reply.send({
-    data: {
-      name: detail.name,
-      musicLengthInSecond: parseInt(detail.musicLengthInSecond),
-      ready: detail.ready === "true",
-      readyAt: detail.readyAt || null,
-    },
-  });
+  const detail: any = await RedisInstance.getInstance().call(
+    "JSON.GET",
+    "music-box-json"
+  );
+  reply.send(
+    snakecaseKeys({
+      data: JSON.parse(detail) || null,
+    })
+  );
 };
