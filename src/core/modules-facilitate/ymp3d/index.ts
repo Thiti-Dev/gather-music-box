@@ -1,17 +1,13 @@
 import Ymp3 from "ymp3d";
 import { IDownloadProgress } from "./interfaces";
 
-export function downloadMP3FromYoutubeURL(
+export async function downloadMP3FromYoutubeURL(
   ytURL: string,
   outputLocation: string,
   onFinish?: (fileName: string) => any,
   onProgress?: (progress: IDownloadProgress) => any
-): any {
+): Promise<any> {
   const y = new Ymp3();
-
-  y.Download(ytURL, outputLocation)
-    .then((videoInfo) => console.log(videoInfo))
-    .catch((e) => console.log(e));
 
   y.on<IDownloadProgress>("progress", function (progress) {
     onProgress?.(progress);
@@ -20,4 +16,6 @@ export function downloadMP3FromYoutubeURL(
   y.on("finish", function (fileName) {
     onFinish?.(fileName);
   });
+
+  return await y.Download(ytURL, outputLocation);
 }
