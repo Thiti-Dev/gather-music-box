@@ -27,6 +27,7 @@ process.on("uncaughtException", async function (err) {
       const redisInstance: FastifyRedis = RedisInstance.getInstance();
       await redisInstance.call("JSON.DEL", "music-box-json");
       SocketInstance.getInstance().emit("video-reset");
+      store.set("block", false);
     }
   }
 });
