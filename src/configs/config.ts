@@ -2,8 +2,8 @@ import { IConfig } from "../../src/interfaces/common.interfaces";
 
 export const CONFIGS: IConfig = {
   gatherCredential: {
-    apiKey: "qpU7PKbB8tpSeF4B",
-    spaceId: "amp8OKPVMZYNSscF\\ZynTaX",
-    mapId: "rwe-hangout",
+    apiKey: process.env.GATHER_API_KEY!,
+    spaceId: process.env.GATHER_SPACE_ID!,
+    mapId: process.env.GATHER_MAP_ID!,
   },
 };
