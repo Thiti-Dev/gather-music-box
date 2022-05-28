@@ -1,29 +1,35 @@
-## 🎓 site status tracker => using GO(golang)
+## 🎓 Gather-Music-Box
 
-A tracker for checking the response status of the specific websites given thru runtime
+A music box player located in gather for playing sounds&music to others
 
-## ✨ Features
+## ✨ MainStack
 
-- Track more than 1 website
-- Be able to provide the interval of each connection flush
-- Progressive Interface
-- User-friendly
+- Fastify
+- Socket.io
+- Redis
 
 ## 🚀 Getting Started
 
-1. **Run the script.**
+1. **Run the server.**
 
-run the script and continue to the step that will be shown on the cmd
+###### start the fastify server in the development mode with 
 
 ```sh
-go run entry.go --site=http://google.com,http://twitter.com,http://doraemon.not.exist --interval=2000
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/36455825/170841354-763a4cd1-fd83-4605-877c-f5b1fdc23671.gif)
+yarn start:dev
 ```
 
-## 🌟 Preview
-<div style="text-align: center">
-  <img src="https://i.imgur.com/yrs5qD6.gif](https://user-images.githubusercontent.com/36455825/170841354-763a4cd1-fd83-4605-877c-f5b1fdc23671.gif" alt="xJFDAQ.png" border="0" />
-</div>
+2. **Build project.**
+
+###### compling the project into the vanilla-js
+
+```sh
+yarn build
+```
+
+## 🌟 Demo of integration with gather-town
+<p align="center">
+<img src="https://user-images.githubusercontent.com/36455825/170841694-a2a46910-bf92-45ca-8603-3580a622afa0.gif" width="1024" height="768">
+</p>
 
 <p align="center">
   <b>: Contact me By :</b><br>
