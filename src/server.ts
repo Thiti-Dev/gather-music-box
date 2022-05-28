@@ -3,10 +3,15 @@ import path from "path";
 import { CONFIGS } from "./configs/config";
 import { getMapContent } from "./core/gather";
 import "./core/process/handle-rejection";
+import { setUpRedisDatabase } from "./redis/init";
+
+require("dotenv").config();
 
 const fastify: ReturnType<typeof Fastify> = Fastify({
   logger: true,
 });
+
+setUpRedisDatabase(fastify);
 
 fastify.register(require("@fastify/static"), {
   root: path.join(__dirname, "../public"),
