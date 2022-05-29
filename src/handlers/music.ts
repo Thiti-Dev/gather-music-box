@@ -43,8 +43,8 @@ export const requestMusicHandler = async (
         publicMusicURL,
         (target: any) =>
           target.id === "SPJxItemShop-Sound-001" &&
-          target.x === 57 &&
-          target.y === 32
+          target.x === 16 &&
+          target.y === 57
       );
 
       const now = new Date(),

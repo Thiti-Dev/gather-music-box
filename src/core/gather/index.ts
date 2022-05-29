@@ -1,7 +1,11 @@
 import { IConfig } from "../../interfaces/common.interfaces";
 import fetch, { Response } from "node-fetch";
 import { URLSearchParams } from "url";
-import { GATHER_GET_MAP_URL, GATHER_SET_MAP_URL } from "../../constants/vars";
+import {
+  GATHER_GET_MAP_URL,
+  GATHER_SET_MAP_URL,
+  PREDEFINED_GATHER_SOUND_EMITTER_OBJ_STRINGIFIED,
+} from "../../constants/vars";
 export async function getMapContent(
   gatherConf: IConfig["gatherCredential"]
 ): Promise<any> {
@@ -41,10 +45,15 @@ export async function changeMusic(
   which: (target: any) => boolean
 ): Promise<any> {
   const mapContent = await getMapContent(gatherConf);
-  const targetObj = mapContent.objects.find(which);
-  if (targetObj) {
-    targetObj.sound.src = musicURL + "?" + new Date().getTime();
-    console.log("[changeMusic]: found targetObj updating instance");
-    await setMapContent(gatherConf, mapContent);
+  let targetObj = mapContent.objects.find(which);
+  let pushLater: boolean = false;
+  if (!targetObj) {
+    console.log("found obj got removed -> creating a new one");
+    targetObj = JSON.parse(PREDEFINED_GATHER_SOUND_EMITTER_OBJ_STRINGIFIED);
+    pushLater = true;
   }
+  targetObj.sound.src = musicURL + "?" + new Date().getTime();
+  console.log("[changeMusic]: found targetObj updating instance");
+  pushLater && mapContent.objects.push(targetObj);
+  await setMapContent(gatherConf, mapContent);
 }
