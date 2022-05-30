@@ -42,10 +42,9 @@ export const requestMusicHandler = async (
         CONFIGS.gatherCredential,
         publicMusicURL,
         (target: any) =>
-          target.id ===
-            "RIPTimGill - M28uALsX665f41YU-GOxI_7ad7f7c8-29c8-4187-8500-eb8d826e546e" &&
-          target.x === 13 &&
-          target.y === 57
+          target.id === process.env.GATHER_TARGET_OBJECT_ID &&
+          target.x === +!process.env.GATHER_TARGET_X &&
+          target.y === +!process.env.GATHER_TARGET_Y
       );
 
       const now = new Date(),
