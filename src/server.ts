@@ -1,4 +1,4 @@
-require("dotenv").config({ debug: true, override: true });
+require("dotenv").config({ debug: true, override: false });
 
 import Fastify from "fastify";
 import path from "path";
