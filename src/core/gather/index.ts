@@ -53,6 +53,9 @@ export async function changeMusic(
     pushLater = true;
   }
   targetObj.sound.src = musicURL + "?" + new Date().getTime();
+  targetObj.sound.loop = false;
+  targetObj.sound.volume = 0.1;
+  targetObj.sound.maxDistance = 8;
   console.log("[changeMusic]: found targetObj updating instance");
   pushLater && mapContent.objects.push(targetObj);
   await setMapContent(gatherConf, mapContent);

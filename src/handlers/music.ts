@@ -42,8 +42,9 @@ export const requestMusicHandler = async (
         CONFIGS.gatherCredential,
         publicMusicURL,
         (target: any) =>
-          target.id === "SPJxItemShop-Sound-001" &&
-          target.x === 16 &&
+          target.id ===
+            "RIPTimGill - M28uALsX665f41YU-GOxI_7ad7f7c8-29c8-4187-8500-eb8d826e546e" &&
+          target.x === 13 &&
           target.y === 57
       );
 
