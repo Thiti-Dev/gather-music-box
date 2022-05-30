@@ -1,11 +1,11 @@
+require("dotenv").config({ debug: true, override: true });
+
 import Fastify from "fastify";
 import path from "path";
 import "./core/process/handle-rejection";
 import { setUpRedisDatabase } from "./redis/init";
 import { initializeSocketIO } from "./socket/init";
 import { SocketInstance } from "./socket/instance";
-
-require("dotenv").config({ debug: true, override: true });
 
 const fastify: ReturnType<typeof Fastify> = Fastify({
   logger: true,
