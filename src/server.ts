@@ -5,7 +5,7 @@ import { setUpRedisDatabase } from "./redis/init";
 import { initializeSocketIO } from "./socket/init";
 import { SocketInstance } from "./socket/instance";
 
-require("dotenv").config();
+require("dotenv").config({ debug: true, override: true });
 
 const fastify: ReturnType<typeof Fastify> = Fastify({
   logger: true,
