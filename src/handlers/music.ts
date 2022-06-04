@@ -19,16 +19,6 @@ export const requestMusicHandler = async (
     return;
   }
 
-  const isBlocked = store.get("block");
-
-  if (isBlocked) {
-    return reply
-      .status(400)
-      .send({ message: "There is another music-request inprogress" });
-  }
-
-  store.set("block", true);
-
   const redisInstance: FastifyRedis = RedisInstance.getInstance();
 
   const musicDetail = await downloadMP3FromYoutubeURL(
@@ -78,8 +68,6 @@ export const requestMusicHandler = async (
           )
         )
       );
-
-      store.set("block", false);
     },
     (progress) => {
       SocketInstance.getInstance().emit(
@@ -88,7 +76,6 @@ export const requestMusicHandler = async (
       );
     }
   ).catch(() => {
-    store.set("block", false);
     reply.status(400).send({ message: "invalid given url" });
     return;
   });
