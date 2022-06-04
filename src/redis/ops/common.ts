@@ -41,6 +41,16 @@ export async function updateListAtSpecificIndex(
   );
 }
 
+export async function getListAtSpecificIndex<T = any>(
+  key: string,
+  index: number,
+  parse: boolean = false
+): Promise<T> {
+  const item = await RedisInstance.getInstance().call("LINDEX", key, index);
+  if (!parse) return item;
+  return JSON.parse(item);
+}
+
 export async function addListItem(key: string, element: any): Promise<void> {
   await RedisInstance.getInstance().call(
     "RPUSH",
