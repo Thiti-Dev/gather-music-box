@@ -159,6 +159,19 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
+"@types/amqplib@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@types/amqplib/-/amqplib-0.8.2.tgz#9c46f2c7fac381e4f81bcb612c00d54549697d22"
+  integrity sha512-p+TFLzo52f8UanB+Nq6gyUi65yecAcRY3nYowU6MPGFtaJvEDxcnFWrxssSTkF+ts1W3zyQDvgVICLQem5WxRA==
+  dependencies:
+    "@types/bluebird" "*"
+    "@types/node" "*"
+
+"@types/bluebird@*":
+  version "3.5.36"
+  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.36.tgz#00d9301d4dc35c2f6465a8aec634bb533674c652"
+  integrity sha512-HBNx4lhkxN7bx6P0++W8E289foSu8kO8GCk2unhuVggO+cE7rh9DhZUyPhUxNRG9m+5B5BTKxZQ5ZP92x/mx9Q==
+
 "@types/component-emitter@^1.2.10":
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/@types/component-emitter/-/component-emitter-1.2.11.tgz#50d47d42b347253817a39709fef03ce66a108506"
@@ -685,7 +698,7 @@ flatstr@^1.0.12:
 fluent-ffmpeg@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/fluent-ffmpeg/-/fluent-ffmpeg-2.1.2.tgz#c952de2240f812ebda0aa8006d7776ee2acf7d74"
-  integrity sha1-yVLeIkD4EuvaCqgAbXd27irPfXQ=
+  integrity sha512-IZTB4kq5GK0DPp7sGQ0q/BWurGHffRtQQwVkiqDgeO6wYJLLV5ZhgNOQ65loZxxuPMKZKZcICCUnaGtlxBiR0Q==
   dependencies:
     async ">=0.2.9"
     which "^1.1.1"
@@ -883,7 +896,7 @@ isarray@0.0.1:
 isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
-  integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
+  integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
 json-buffer@3.0.0:
   version "3.0.0"
@@ -1631,10 +1644,8 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-ymp3d@^1.0.2:
+ymp3d@./src/internal-packages/ymp3d:
   version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ymp3d/-/ymp3d-1.0.2.tgz#362ddb8853e94c1ced994892d011d702a1667783"
-  integrity sha512-gDuqrC8zQUsd+yUGBAmzEqx3XHnccbda2RBoStxcE1Ixn+o0Pm3iIJLbsZAR5yrkQY1k9hIRAyreYcwxA/XUNg==
   dependencies:
     "@ffmpeg-installer/ffmpeg" "^1.1.0"
     fluent-ffmpeg "^2.1.2"
