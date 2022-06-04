@@ -33,10 +33,10 @@ export const requestMusicHandler = async (
 
   const musicDetail = await downloadMP3FromYoutubeURL(
     request.body.yt_url,
-    "public/temp/current.mp3",
-    async (fileName: string) => {
+    "public/temp/",
+    async (filePath: string) => {
       const ipv4: string = await publicIp.v4();
-      const publicMusicURL: string = `${process.env.DEPLOYMENT_URL}/public/temp/current.mp3`;
+      const publicMusicURL: string = `${process.env.DEPLOYMENT_URL}/${filePath}`;
       console.log(publicMusicURL);
       await changeMusic(
         CONFIGS.gatherCredential,
