@@ -3,10 +3,9 @@ require("dotenv").config({ debug: true, override: false });
 import Fastify from "fastify";
 import path from "path";
 import "./core/process/handle-rejection";
+import { createQueueConnection } from "./queue/init";
 import { setUpRedisDatabase } from "./redis/init";
 import { initializeSocketIO } from "./socket/init";
-import { SocketInstance } from "./socket/instance";
-
 const fastify: ReturnType<typeof Fastify> = Fastify({
   logger: true,
 });
@@ -37,6 +36,8 @@ fastify.register(require("@fastify/cors"), function (instance) {
     callback(null, corsOptions); // callback expects two parameters: error and options
   };
 });
+
+createQueueConnection();
 
 initializeSocketIO(fastify.server);
 
