@@ -69,4 +69,19 @@ export async function popFromList<T = any>(
 export async function getListCount(key: string): Promise<number> {
   return RedisInstance.getInstance().call("LLEN", key);
 }
+
+export async function removeAllListItem(key: string): Promise<void> {
+  return RedisInstance.getInstance().call("DEL", key);
+}
+
+export async function findListItemIndexAndItsElement<T = any>(
+  key: string,
+  criteria: (listData: T) => boolean,
+  parse: boolean = false
+): Promise<[number, T | null]> {
+  const lists: Array<T> = await getList(key, parse);
+  const index = lists.findIndex(criteria);
+  if (index === -1) return [index, null];
+  return [index, lists[index]];
+}
 // ────────────────────────────────────────────────────────────────────────────────
