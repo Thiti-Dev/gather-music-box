@@ -10,6 +10,11 @@ import { FastifyRedis } from "@fastify/redis";
 import publicIp from "public-ip";
 import { SocketInstance } from "../socket/instance";
 import store from "store";
+import { QueueInstance } from "../queue/instance";
+import { M_QUEUE_QUEUE_NAME } from "../constants/vars";
+import ytdl from "ytdl-core";
+import { getVideoInfoFromURL } from "../core/modules-facilitate/ytdl-core";
+import { removeAllListItem } from "../redis/ops/common";
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
@@ -19,7 +24,20 @@ export const requestMusicHandler = async (
     return;
   }
 
-  const redisInstance: FastifyRedis = RedisInstance.getInstance();
+  try {
+    const vidInfo: ytdl.videoInfo = await getVideoInfoFromURL(
+      request.body.yt_url
+    );
+    QueueInstance.sendMessage(
+      M_QUEUE_QUEUE_NAME,
+      JSON.stringify(vidInfo.videoDetails)
+    );
+    reply.send({ data: vidInfo.videoDetails });
+  } catch {
+    return reply.status(400).send({ message: "invalid given url" });
+  }
+
+  /*const redisInstance: FastifyRedis = RedisInstance.getInstance();
 
   const musicDetail = await downloadMP3FromYoutubeURL(
     request.body.yt_url,
@@ -103,7 +121,7 @@ export const requestMusicHandler = async (
     "video-updated",
     snakecaseKeys(redisEntity)
   );
-  reply.send(snakecaseKeys({ data: musicDetail }));
+  reply.send(snakecaseKeys({ data: musicDetail }));*/
 };
 
 export const getCurrentMusicDetailHandler = async (
@@ -119,4 +137,12 @@ export const getCurrentMusicDetailHandler = async (
       data: JSON.parse(detail) || null,
     })
   );
+};
+
+export const clearQueueHandler = async (
+  request: FastifyRequest<any>,
+  reply: FastifyReply
+) => {
+  await removeAllListItem("music-queue-list");
+  reply.send({ success: true });
 };
