@@ -6,6 +6,7 @@ import {
   popFromList,
   updateListAtSpecificIndex,
 } from "../../../redis/ops/common";
+import { sendMusicUpdatedDataToAllPeers } from "../../events";
 import { changeMusic } from "../../gather";
 
 function sleep(ms: number) {
@@ -30,6 +31,9 @@ async function performMusicProceedFurtherStep(): Promise<any> {
     true
   );
   if (!queueListEntities.length) return;
+
+  let anyOperationDone: boolean = false;
+
   //pick the first
   const target = queueListEntities[0];
   //check if its downloaded = true but still haven't settle readyAt & shouldBeEndAt
@@ -46,6 +50,7 @@ async function performMusicProceedFurtherStep(): Promise<any> {
       readyAt: now.getTime(),
       shouldBeEndAt: end.getTime(),
     } as IMusicQueueListRedisEntity);
+    anyOperationDone = true;
   } else if (
     target.downloaded &&
     target.readyAt &&
@@ -76,7 +81,10 @@ async function performMusicProceedFurtherStep(): Promise<any> {
       await startNextMusicChangingProcess("non-exist.mp3"); // tricky one to stop the current music
       await popFromList("music-queue-list", true); // pop the very first element in queue
     }
+
+    anyOperationDone = true;
   }
+  if (anyOperationDone) sendMusicUpdatedDataToAllPeers();
 }
 
 export function musicControllerTick(): void {

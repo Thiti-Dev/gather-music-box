@@ -13,6 +13,7 @@ import ytdl from "ytdl-core";
 import { IMusicQueueListRedisEntity } from "../../../interfaces/music-queue.interfaces";
 import { existsSync } from "fs";
 import store from "store";
+import { sendMusicUpdatedDataToAllPeers } from "../../events";
 
 export async function MQUEUE_PUBLIC_ACTION_IsMusicStillInDownloading(
   videoID: string
@@ -45,6 +46,8 @@ async function MQUEUE_PRIV_ACTION_PushMusicToQueue(
   };
 
   await addListItem("music-queue-list", redisListEntity);
+
+  sendMusicUpdatedDataToAllPeers();
 }
 
 export async function MQUEUE_ACTION_StartDownloadingProcess(
@@ -65,7 +68,7 @@ export async function MQUEUE_ACTION_StartDownloadingProcess(
     console.log(
       `found ${vidDetail.videoId} already existed and not in download`
     );
-    MQUEUE_PRIV_ACTION_PushMusicToQueue(vidDetail, true); // immeditely append to the queue
+    await MQUEUE_PRIV_ACTION_PushMusicToQueue(vidDetail, true); // immeditely append to the queue
     ch.ack(qmsg);
     return;
   }
