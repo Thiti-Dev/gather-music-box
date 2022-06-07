@@ -1,9 +1,6 @@
-import ytdl from "ytdl-core";
-
-export default ytdl;
-
+import { VideoDetails, thumbnail } from "ytdl-core";
 declare module "ytdl-core" {
   export interface VideoDetails {
-    thumbnails: ytdl.thumbnail[];
+    thumbnails: thumbnail[];
   }
 }
