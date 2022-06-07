@@ -1,20 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CONFIGS } from "../configs/config";
-import { changeMusic } from "../core/gather";
-import { downloadMP3FromYoutubeURL } from "../core/modules-facilitate/ymp3d";
 import { RedisInstance } from "../redis/instance";
-
 import snakecaseKeys from "snakecase-keys";
-import { FastifyRedis } from "@fastify/redis";
-
-import publicIp from "public-ip";
-import { SocketInstance } from "../socket/instance";
-import store from "store";
 import { QueueInstance } from "../queue/instance";
 import { M_QUEUE_QUEUE_NAME } from "../constants/vars";
 import ytdl from "ytdl-core";
 import { getVideoInfoFromURL } from "../core/modules-facilitate/ytdl-core";
 import { removeAllListItem } from "../redis/ops/common";
+import { MQUEUE_PUBLIC_ACTION_IsMusicStillInDownloading } from "../core/queue-consumer/mqueue/action";
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
@@ -28,6 +20,17 @@ export const requestMusicHandler = async (
     const vidInfo: ytdl.videoInfo = await getVideoInfoFromURL(
       request.body.yt_url
     );
+
+    if (
+      await MQUEUE_PUBLIC_ACTION_IsMusicStillInDownloading(
+        vidInfo.videoDetails.videoId
+      )
+    ) {
+      return reply
+        .status(400)
+        .send({ message: "music still in downloading queue" });
+    }
+
     QueueInstance.sendMessage(
       M_QUEUE_QUEUE_NAME,
       JSON.stringify(vidInfo.videoDetails)
@@ -36,92 +39,6 @@ export const requestMusicHandler = async (
   } catch {
     return reply.status(400).send({ message: "invalid given url" });
   }
-
-  /*const redisInstance: FastifyRedis = RedisInstance.getInstance();
-
-  const musicDetail = await downloadMP3FromYoutubeURL(
-    request.body.yt_url,
-    "public/temp/",
-    async (filePath: string) => {
-      const ipv4: string = await publicIp.v4();
-      const publicMusicURL: string = `${process.env.DEPLOYMENT_URL}/${filePath}`;
-      console.log(publicMusicURL);
-      await changeMusic(
-        CONFIGS.gatherCredential,
-        publicMusicURL,
-        (target: any) =>
-          target.id === process.env.GATHER_TARGET_OBJECT_ID &&
-          target.x === +!process.env.GATHER_TARGET_X &&
-          target.y === +!process.env.GATHER_TARGET_Y
-      );
-
-      const now = new Date(),
-        end = new Date();
-
-      end.setSeconds(end.getSeconds() + parseInt(musicDetail.seconds));
-
-      await Promise.all([
-        redisInstance.call("JSON.SET", "music-box-json", ".ready", true),
-        redisInstance.call(
-          "JSON.SET",
-          "music-box-json",
-          ".readyAt",
-          now.getTime()
-        ),
-        redisInstance.call(
-          "JSON.SET",
-          "music-box-json",
-          ".shouldBeEndAt",
-          end.getTime()
-        ),
-      ]);
-      console.log("setting ready = true");
-      SocketInstance.getInstance().emit("download-progress", 100);
-
-      SocketInstance.getInstance().emit(
-        "video-updated",
-        snakecaseKeys(
-          JSON.parse(
-            await RedisInstance.getInstance().call("JSON.GET", "music-box-json")
-          )
-        )
-      );
-    },
-    (progress) => {
-      SocketInstance.getInstance().emit(
-        "download-progress",
-        parseInt(progress.percent)
-      );
-    }
-  ).catch(() => {
-    reply.status(400).send({ message: "invalid given url" });
-    return;
-  });
-
-  const reqStamptation: number = new Date().getTime();
-
-  const redisEntity = {
-    name: musicDetail.name,
-    thumbnail: musicDetail.thumbnail,
-    musicLengthInSecond: parseInt(musicDetail.seconds),
-    ready: false,
-    requestedAt: reqStamptation,
-    readyAt: null,
-    shouldBeEndAt: null,
-  };
-
-  redisInstance.call(
-    "JSON.SET",
-    "music-box-json",
-    ".",
-    JSON.stringify(redisEntity)
-  );
-
-  SocketInstance.getInstance().emit(
-    "video-updated",
-    snakecaseKeys(redisEntity)
-  );
-  reply.send(snakecaseKeys({ data: musicDetail }));*/
 };
 
 export const getCurrentMusicDetailHandler = async (
