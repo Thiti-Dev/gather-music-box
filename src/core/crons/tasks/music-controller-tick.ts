@@ -36,7 +36,6 @@ async function performMusicProceedFurtherStep(): Promise<any> {
 
   const nowUnix = new Date().getTime();
   if (target.downloaded && !target.readyAt) {
-    console.log("found music in list waiting to be play");
     await startNextMusicChangingProcess(target.fileName!);
     const now = new Date(),
       end = new Date();
