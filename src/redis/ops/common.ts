@@ -13,17 +13,17 @@ import { RedisInstance } from "../instance";
 export async function getList<T = any>(
   key: string,
   parseEach: boolean = false
-): Promise<any> {
+): Promise<T> {
   const list: Array<T> = await RedisInstance.getInstance().call(
     "LRANGE",
     key,
     0,
     -1
   );
-  if (!parseEach) return list;
+  if (!parseEach) return list as unknown as T;
   return list.map((stringified) =>
     JSON.parse(stringified as unknown as string)
-  );
+  ) as unknown as T;
 }
 
 export async function updateListAtSpecificIndex(
@@ -63,7 +63,7 @@ export async function popFromList<T = any>(
   key: string,
   fromHead: boolean = true
 ): Promise<T> {
-  return RedisInstance.getInstance().call(fromHead ? "LPUSH" : "RPUSH", key);
+  return RedisInstance.getInstance().call(fromHead ? "LPOP" : "RPOP", key);
 }
 
 export async function getListCount(key: string): Promise<number> {
