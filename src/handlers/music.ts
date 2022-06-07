@@ -5,8 +5,9 @@ import { QueueInstance } from "../queue/instance";
 import { M_QUEUE_QUEUE_NAME } from "../constants/vars";
 import ytdl from "ytdl-core";
 import { getVideoInfoFromURL } from "../core/modules-facilitate/ytdl-core";
-import { removeAllListItem } from "../redis/ops/common";
+import { getList, removeAllListItem } from "../redis/ops/common";
 import { MQUEUE_PUBLIC_ACTION_IsMusicStillInDownloading } from "../core/queue-consumer/mqueue/action";
+import { IMusicQueueListRedisEntity } from "../interfaces/music-queue.interfaces";
 export const requestMusicHandler = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
@@ -41,17 +42,17 @@ export const requestMusicHandler = async (
   }
 };
 
-export const getCurrentMusicDetailHandler = async (
+export const getListOfMusicInQueue = async (
   request: FastifyRequest<any>,
   reply: FastifyReply
 ) => {
-  const detail: any = await RedisInstance.getInstance().call(
-    "JSON.GET",
-    "music-box-json"
+  const musicLists = await getList<IMusicQueueListRedisEntity[]>(
+    "music-queue-list",
+    true
   );
   reply.send(
     snakecaseKeys({
-      data: JSON.parse(detail) || null,
+      data: musicLists,
     })
   );
 };

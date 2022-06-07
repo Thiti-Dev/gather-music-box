@@ -6,7 +6,7 @@ import Fastify, {
 } from "fastify";
 import {
   clearQueueHandler,
-  getCurrentMusicDetailHandler,
+  getListOfMusicInQueue,
   requestMusicHandler,
 } from "../handlers/music";
 
@@ -20,6 +20,6 @@ export default function (
   });
   fastify.post("/request-music", requestMusicHandler);
   fastify.post("/clear-queue", clearQueueHandler);
-  fastify.get("/current-music-detail", getCurrentMusicDetailHandler);
+  fastify.get("/get-all-music-in-queue", getListOfMusicInQueue);
   done();
 }
