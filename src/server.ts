@@ -2,6 +2,7 @@ require("dotenv").config({ debug: true, override: false });
 
 import Fastify from "fastify";
 import path from "path";
+import { initiateCronProcesses } from "./core/crons";
 import "./core/process/handle-rejection";
 import { createQueueConnection } from "./queue/init";
 import { setUpRedisDatabase } from "./redis/init";
@@ -65,3 +66,5 @@ fastify.get("/", (request, reply) => {
 fastify.listen(process.env.PORT || 3000, "0.0.0.0", (err, address) => {
   if (err) throw err;
 });
+
+initiateCronProcesses();
