@@ -36,6 +36,7 @@ async function performMusicProceedFurtherStep(): Promise<any> {
 
   const nowUnix = new Date().getTime();
   if (target.downloaded && !target.readyAt) {
+    console.log("found music in list waiting to be play");
     await startNextMusicChangingProcess(target.fileName!);
     const now = new Date(),
       end = new Date();
@@ -82,7 +83,6 @@ export function musicControllerTick(): void {
   let inProgress: boolean = false;
   const job: cron.ScheduledTask = cron.schedule("*/1 * * * * *", async () => {
     if (inProgress) return;
-    console.log("running a task every 1 second");
     inProgress = true; // block the cron from executing while the current process isn't finished
     await performMusicProceedFurtherStep();
     await sleep(3000);
