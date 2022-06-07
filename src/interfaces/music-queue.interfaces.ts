@@ -1,9 +1,9 @@
-import { thumbnail } from "ytdl-core";
+import { VideoDetails } from "ytdl-core";
 
 export interface IMusicQueueListRedisEntity {
   id: string;
   name: string;
-  thumbnails: thumbnail[];
+  thumbnails: VideoDetails["thumbnails"];
   musicLengthInSecond: number;
   requestedAt: number;
   downloaded: boolean;
